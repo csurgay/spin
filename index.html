@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spin</title>
+    </head>
+    <body onload="init();" style="margin:0;overflow:hidden;">
+        <canvas id="mycanvas"></canvas>
+        <script>
+const r=300;
+const canvas=document.getElementById("mycanvas");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const ctx=canvas.getContext("2d");
+const wheel=new Image();
+function init() {
+    console.log("Start...");
+    wheel.onload=main;
+    wheel.src="spin.jpg";
+}
+function main() {
+    console.log("Loaded...");
+    ctx.translate(r,r);
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,2*Math.PI);
+    ctx.clip();
+    ctx.drawImage(wheel,-r,-r,2*r,2*r);
+    animate();
+}
+var alpha=1;
+var step=1;
+var limit=0;
+function animate() {
+    ctx.rotate(2*Math.PI/alpha);
+    ctx.drawImage(wheel,-r,-r,2*r,2*r);
+    step++;
+    limit+=150+50*Math.random();
+    if (step<limit) alpha++;
+    else {
+        limit+=100+50*Math.random();
+        if (step<limt) alpha*=1.05;
+        else limit+=50*Math.random();
+    }
+    if (step<limit) window.requestAnimationFrame(animate);
+}
+        </script>
+    </body>
+</html>
