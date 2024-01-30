@@ -27,20 +27,41 @@ function main() {
     animate();
 }
 var alpha=1;
-var step=1;
+var step=0;
 var limit=0;
+var state="stage0";
 function animate() {
     ctx.rotate(2*Math.PI/alpha);
     ctx.drawImage(wheel,-r,-r,2*r,2*r);
     step++;
-    limit+=150+50*Math.random();
-    if (step<limit) alpha++;
-    else {
-        limit+=100+50*Math.random();
-        if (step<limt) alpha*=1.05;
-        else limit+=50*Math.random();
+    if (state=="stage0") {
+        if (step>limit) {
+            limit+=100+100*Math.random();
+            state="stage1";
+        }
     }
-    if (step<limit) window.requestAnimationFrame(animate);
+    else if (state=="stage1") {
+        alpha++;
+        if (step>limit) {
+            limit+=100+100*Math.random();
+            state="stage2";
+        }
+    }
+    else if (state=="stage2") {
+        alpha*=1.03;
+        if (step>limit) {
+            limit+=100+100*Math.random();
+            state="stage3";
+        }
+    }
+    else if (state=="stage3") {
+        alpha*=10;
+        if (step>limit) {
+            limit+=50+50*Math.random();
+            state="stage4";
+        }
+    }
+    if (state!="stage4") window.requestAnimationFrame(animate);
 }
         </script>
     </body>
