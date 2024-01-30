@@ -6,33 +6,54 @@
     <body onload="init();" style="margin:0;overflow:hidden;">
         <canvas id="mycanvas"></canvas>
         <script>
-const r=300;
 const canvas=document.getElementById("mycanvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+const portrait=canvas.height>canvas.width;
+const r=portrait?canvas.height/4:canvas.width/4;
 const ctx=canvas.getContext("2d");
 const wheel=new Image();
+const arrow=new Image();
+const angol=new Image();
+var images=3;
 function init() {
     console.log("Start...");
-    wheel.onload=main;
+    wheel.onload=wait;
+    arrow.onload=wait;
+    angol.onload=wait;
     wheel.src="spin.jpg";
+    arrow.src="arrow.png";
+    angol.src="angol.png";
+}
+function wait() {
+    images--;
+    if (images==0) main();
 }
 function main() {
     console.log("Loaded...");
+    ctx.save();
     ctx.translate(r,r);
     ctx.beginPath();
     ctx.arc(0,0,r,0,2*Math.PI);
     ctx.clip();
-    ctx.drawImage(wheel,-r,-r,2*r,2*r);
+//    ctx.drawImage(wheel,-r,-r,2*r,2*r);
     animate();
 }
 var alpha=1;
 var step=0;
 var limit=0;
 var state="stage0";
+var wheelangle=15*Math.random()*2*Math.PI/15;
+var arrowangle=0;
 function animate() {
-    ctx.rotate(2*Math.PI/alpha);
+    wheelangle+=2*Math.PI/alpha;
+    arrowangle-=2*Math.PI/(2*alpha);
+    ctx.rotate(wheelangle);
     ctx.drawImage(wheel,-r,-r,2*r,2*r);
+    ctx.rotate(-wheelangle);
+    ctx.rotate(arrowangle);
+    ctx.drawImage(arrow,-r,-r,2*r,2*r);
+    ctx.rotate(-arrowangle);
     step++;
     if (state=="stage0") {
         if (step>limit) {
@@ -43,25 +64,30 @@ function animate() {
     else if (state=="stage1") {
         alpha++;
         if (step>limit) {
-            limit+=100+100*Math.random();
+            limit+=100+200*Math.random();
             state="stage2";
         }
     }
     else if (state=="stage2") {
         alpha*=1.03;
         if (step>limit) {
-            limit+=100+100*Math.random();
+            limit+=50+50*Math.random();
             state="stage3";
         }
     }
-    else if (state=="stage3") {
-        alpha*=10;
-        if (step>limit) {
-            limit+=50+50*Math.random();
-            state="stage4";
-        }
+    if (state!="stage3") window.requestAnimationFrame(animate);
+    else {
+        ctx.restore();
+        ctx.translate(portrait?r:3*r,portrait?3*r:r);
+        ctx.beginPath();
+        ctx.arc(0,0,r,0,2*Math.PI);
+        ctx.clip();
+        ctx.rotate(wheelangle);
+        ctx.drawImage(wheel,-r,-r,2*r,2*r);
+        ctx.rotate(0.583*Math.PI);
+        var q=0.975;
+        ctx.drawImage(angol,-q*r+5,-q*r+5,2*q*r,2*q*r);
     }
-    if (state!="stage4") window.requestAnimationFrame(animate);
 }
         </script>
     </body>
